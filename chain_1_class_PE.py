@@ -332,7 +332,7 @@ class CPE(threading.Thread):
         #            b
         #            -
         # none       -
-        self.connectorUpper.send_b(self.bit[channelA])
+        pass
 
     # --------------------------------------------------------------------------
     def clear(self, channelA):
@@ -352,8 +352,7 @@ class CPE(threading.Thread):
         # 
         # 
         # none
-        self.bit[channelA] = True
-        self.bit[channelB] = True
+        pass
 
     #---------------------------------------------------------------------------
     def first(self, channelA):
@@ -363,104 +362,32 @@ class CPE(threading.Thread):
         #          W
         #          -
         # none     - 
-        self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-
+        pass
+    
     # === LIST OPERATIONS, whole chain operations ========================================
 
     def copy(self, channelA, resultChannel):
         """Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # copy(A,R)
-            # 
-            # 
-            # copy(A,R)
-            self.connectorLower.send_o("copy", channelA, resultChannel)
-            self.word[resultChannel] = self.word[channelA]
-            self.bit[resultChannel] = False
-        elif self.bit[channelA]:
-            # copy(A,R)
-            # 
-            # 
-            # none
-            self.bit[resultChannel] = True
+        pass
 
     #---------------------------------------------------------------------------
     def move(self, channelA, resultChannel):
         """Implements copy(A,R) x clear(A).
            Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # move(A,R)
-            # 
-            # 
-            # copy(A,R)
-            self.connectorLower.send_o("copy", channelA, resultChannel)
-            self.word[resultChannel] = self.word[channelA]
-            self.bit[resultChannel] = False
-            self.bit[channelA] = True
-        elif self.bit[channelA]:
-            # move(A,R)
-            # 
-            # 
-            # none
-            self.bit[resultChannel] = True
+        pass
             
     #---------------------------------------------------------------------------
     def swap(self, channelA, channelB):
         """Theta(1)xTheta(n), where n is the length of the longer channel,
            propagation |."""
-        if not self.bit[channelA] and not self.bit[channelB]:
-            # swap(A,B)
-            # 
-            # 
-            # swap(A,B)
-            self.connectorLower.send_o("swap", channelA, channelB)
-            self.temp_w[0] = self.word[channelA]
-            self.word[channelA] = self.word[channelB]
-            self.word[channelB] = self.temp_w[0]
-        elif not self.bit[channelA] and self.bit[channelB]:
-            # swap(A,B)
-            # 
-            # 
-            # copy(A,B)
-            self.connectorLower.send_o("copy", channelA, channelB)
-            self.word[channelB] = self.word[channelA]
-            self.bit[channelB] = False
-            self.bit[channelA] = True
-        elif self.bit[channelA] and not self.bit[channelB]:
-            # swap(A,B)
-            # 
-            # 
-            # copy(A,B)
-            self.connectorLower.send_o("copy", channelB, channelA)
-            self.word[channelA] = self.word[channelB]
-            self.bit[channelA] = False
-            self.bit[channelB] = True
-        elif self.bit[channelA] and self.bit[channelB]:
-            # swap(A,B)
-            # 
-            # 
-            # none
-            pass
+        pass
         
     # --------------------------------------------------------------------------
     def setAll(self, channelA):
         """Sets each word of the channel content to the given word.
            Does not affect the values below the channel content terminator.
            Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # setAll(A) v- 
-            #           w-
-            #           -w
-            # setAll(A) -v 
-            self.word[channelA] = self.connectorUpper.receive_w()
-            self.connectorLower.send_o("setAll", channelA)
-            self.connectorLower.send_w(self.word[channelA])
-        elif self.bit[channelA]:
-            # setAll(A) v 
-            #           w
-            #           -
-            # none      -
-            self.word[channelA] = self.connectorUpper.receive_w()
+        pass
 
     # --------------------------------------------------------------------------
     def member(self, channelA): 
@@ -499,24 +426,7 @@ class CPE(threading.Thread):
         """Shifts all words in the contents of the channel one level down,
            and stores the received word in the current CPE.
            Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # push(A) v- 
-            #         w-
-            #         -w
-            # push(A) -v 
-            self.temp_w[0] = self.word[channelA]
-            self.word[channelA] = self.connectorUpper.receive_w()
-            self.connectorLower.send_o("push", channelA)
-            self.connectorLower.send_w(self.temp_w[0])
-        elif self.bit[channelA]:
-            # push(A)  v 
-            #          w
-            #          -
-            # clear(A) - 
-            self.word[channelA] = self.connectorUpper.receive_w()
-            self.bit[channelA] = False
-            self.extend() 
-            self.connectorLower.send_o("clear", channelA)
+        pass
             
     def pushPoor(self, channelA): #addFirstLinear
         """For instructional purposes only.
@@ -547,24 +457,8 @@ class CPE(threading.Thread):
         """Sends up the Word from the current CPE's channel 
            and pulls all Words in the channel contents one level up.
            Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # Domino:
-            # pull(A) ^- 
-            #         W-
-            #         -W
-            # pull(A) -^
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-            self.connectorLower.send_o("pull", channelA)
-            self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-        elif self.bit[channelA]:
-            # Domino:
-            # pull(A) ^
-            #         W
-            #         -
-            # none    - 
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-
+        pass
+    
     #---------------------------------------------------------------------------
     def replaceGetFirst(self, channelA):
         """Theta(1)xTheta(1), non-propagating."""
@@ -573,35 +467,14 @@ class CPE(threading.Thread):
         #                    wW
         #                    --
         # none               --
-        self.temp_w[0] = self.connectorUpper.receive_w()
-        self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-        self.word[channelA] = self.temp_w[0] # possibly modifies the empty word.
-        
+        pass
+    
     # --- LIST OPERATIONS, bottom operations -----------------------------------------------
 
     def last(self, channelA):
         """Theta(n)xTheta(n), propagation |/."""
-        if not self.bit[channelA]:
-            # Domino:
-            # last(A) -^ 
-            #         -W
-            #         W-
-            # last(A) ^-
-            self.connectorLower.send_o("last", channelA)
-            self.temp_w[0], self.temp_b[0] = self.connectorLower.receive_W()
-            if self.temp_b[0]:
-                self.connectorUpper.send_W(self.word[channelA],
-                                           self.bit[channelA])
-            elif not self.temp_b[0]:
-                self.connectorUpper.send_W(self.temp_w[0], self.temp_b[0])
-        elif self.bit[channelA]:
-            # Domino:
-            # last(A) ^ 
-            #         W
-            #         -
-            # none    - 
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-
+        pass
+    
     #---------------------------------------------------------------------------
     def addLast(self, channelA):
         """Theta(1)xTheta(n), propagation |."""
@@ -624,107 +497,28 @@ class CPE(threading.Thread):
             self.bit[channelA] = False
             self.extend() 
             self.connectorLower.send_o("clear", channelA)
-            
+    
     #---------------------------------------------------------------------------
     def removeLast(self, channelA):
         """Implementation: Pulls up the bit portion of the channel.
            Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # Domino:
-            # removeLast(A) ^- 
-            #               b-
-            #               -b
-            # removeLast(A) -^ 
-            self.connectorUpper.send_b(False)
-            self.connectorLower.send_o("removeLast", channelA)
-            self.bit[channelA] = self.connectorLower.receive_b()
-        elif self.bit[channelA]:
-            # Domino:
-            # removeLast(A) ^ 
-            #               b
-            #               -
-            # none          - 
-            self.connectorUpper.send_b(True)
+        pass
 
     #---------------------------------------------------------------------------
     def removeGetLast(self, channelA):
         """Remove and send up the last item in the chain.
            Theta(n)xTheta(n), propagation |/."""
-        if not self.bit[channelA]:
-            # Domino:
-            # removeGetLast(A) -^ 
-            #                  -W
-            #                  W-
-            # removeGetLast(A) ^- 
-            self.connectorLower.send_o("removeGetLast", channelA)
-            self.temp_w[0], self.temp_b[0] = self.connectorLower.receive_W()
-            if self.temp_b[0]:
-                self.connectorUpper.send_W(self.word[channelA],
-                                           self.bit[channelA])
-                self.bit[channelA] = True
-            elif not self.temp_b[0]:
-                self.connectorUpper.send_W(self.temp_w[0], self.temp_b[0])
-        elif self.bit[channelA]:
-            # Domino:
-            # removeGetLast(A) ^ 
-            #                  W
-            #                  -
-            # none             -
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-
+        pass
+    
     #---------------------------------------------------------------------------
     def replaceLast(self, channelA):
         """Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # Domino:
-            # replaceLast(A) v^-- 
-            #                wb--
-            #                --wb
-            # replaceLast(A) --v^ 
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_b(self.bit[channelA])
-            self.connectorLower.send_o("replaceLast", channelA)
-            self.connectorLower.send_w(self.temp_w[0])
-            self.temp_b[0] = self.connectorLower.receive_b()
-            if self.temp_b[0]:
-                self.word[channelA] = self.temp_w[0]
-            elif not self.temp_b[0]:
-                pass
-        elif self.bit[channelA]:
-            # Domino:
-            # replaceLast(A) v^ 
-            #                wb
-            #                --
-            # none           --
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_b(self.bit[channelA])
+        pass
 
     #---------------------------------------------------------------------------
     def replaceGetLast(self, channelA):
         """Theta(n)xTheta(n), propagation |/."""
-        if not self.bit[channelA]:
-            # Domino:
-            # replaceGetLast(A) v--^ 
-            #                   w--W
-            #                   -wW-
-            # replaceGetLast(A) -v^- 
-            self.temp_w[0] = self.connectorUpper.receive_w() # get replacement
-            self.connectorLower.send_o("replaceGetLast", channelA)
-            self.connectorLower.send_w(self.temp_w[0]) # send replacement down
-            self.temp_w[0], self.temp_b[0] = self.connectorLower.receive_W() 
-            if self.temp_b[0]:
-                self.connectorUpper.send_W(self.word[channelA], False)
-                self.word[channelA] = self.temp_w[0]
-            elif not self.temp_b[0]:
-                self.connectorUpper.send_W(self.temp_w[0], self.temp_b[0])
-        elif self.bit[channelA]:
-            # Domino:
-            # replaceGetLast(A) v^ 
-            #                   wW
-            #                   --
-            # none              -- 
-            self.temp_w[0] = self.connectorUpper.receive_w() # get replacement
-            self.connectorUpper.send_W(self.temp_w[0], True)
+        pass
 
     # --- LIST OPERATIONS, rotations -----------------------------------------------------
 
@@ -732,395 +526,70 @@ class CPE(threading.Thread):
         """Executed only by the top CPE in the chain.
            Implements a=pull(A) x addLast(A,a).
            Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # rotateDown(A)       ^-- 
-            #                     W--
-            #                     -Ww
-            # rotateDownNonTop(A) -^v 
-            self.connectorUpper.send_W(self.word[channelA],
-                                       self.bit[channelA]) #U^
-            self.temp_w[0] = self.word[channelA]
-            self.connectorLower.send_o("pullXaddLast", channelA)
-            self.word[channelA], self.bit[channelA] = \
-                               self.connectorLower.receive_W() #L^
-            self.connectorLower.send_w(self.temp_w[0]) #Lv
-            if self.bit[channelA]:
-                self.bit[channelA] = False
-                self.word[channelA] = self.temp_w[0]
-            elif not self.bit[channelA]:
-                pass
-        elif self.bit[channelA]:
-            # Domino:
-            # rotateDown(A) ^ 
-            #               W
-            #               -
-            # none          - 
-            self.connectorUpper.send_W(self.word[channelA],
-                                       self.bit[channelA])
-
+        pass
+    
     def pullXaddLast(self, channelA):
         """A helper for rotateDown, executed by non-top PEs in the chain.
            Implements pull(A) x addLast(A,a).
            Theta(1)xTheta(n), propagation |."""
-        if not self.bit[channelA]:
-            # Domino: 
-            # pullXaddLast(A) ^v-- 
-            #                 Ww--
-            #                 --Ww
-            # pullXaddLast(A) --^v 
-            self.connectorUpper.send_W(self.word[channelA],
-                                       self.bit[channelA]) #U^
-            self.temp_w[0] = self.connectorUpper.receive_w() #Uv
-            self.connectorLower.send_o("pullXaddLast", channelA)
-            self.word[channelA], self.bit[channelA] = \
-                        self.connectorLower.receive_W() #L^
-            self.connectorLower.send_w(self.temp_w[0]) #Lv
-            if self.bit[channelA]:
-                self.bit[channelA] = False
-                self.word[channelA] = self.temp_w[0]
-            elif not self.bit[channelA]:
-                pass
-        elif self.bit[channelA]:
-            # Domino:
-            # pullXaddLast(A) ^v 
-            #                 Ww
-            #                 --
-            # none            --
-            self.connectorUpper.send_W(self.word[channelA],
-                                       self.bit[channelA]) #U^
-            self.temp_w[0] = self.connectorUpper.receive_w() #Uv
+        pass
 
     #---------------------------------------------------------------------------
     def rotateUp(self, channelA):
         """Executed only by the top CPE in the chain.
            Theta(n)xTheta(n), propagation |/."""
-        if not self.bit[channelA]:
-            # Domino:
-            # rotateUp(A)           --^ 
-            #                       --W
-            #                       wW-
-            # pushXremoveGetLast(A) v^- 
-            self.connectorLower.send_o("pushXremoveGetLast", channelA)
-            self.connectorLower.send_w(self.word[channelA])
-            self.temp_w[0], self.temp_b[0] = self.connectorLower.receive_W()
-            if not self.temp_b[0]:
-                self.word[channelA] = self.temp_w[0]
-            elif self.temp_b[0]:
-                pass
-            self.connectorUpper.send_W(self.word[channelA], False)
-        elif self.bit[channelA]:
-            # Domino:
-            # rotateUp(A) ^ 
-            #             W
-            #             -
-            # none        -
-            self.connectorUpper.send_W(Any, True)
+        pass
 
     def pushXremoveGetLast(self, channelA):
         """A helper for rotateUp, executed by non-top PEs in the chain.
            Theta(n)xTheta(n), propagation |/."""
-        if not self.bit[channelA]:
-            # Domino:
-            # pushXremoveGetLast(A) v--^ 
-            #                       w--W
-            #                       -wW-
-            # pushXremoveGetLast(A) -v^- 
-            self.temp_w[0] = self.word[channelA]
-            self.word[channelA] = self.connectorUpper.receive_w()
-            self.connectorLower.send_o("pushXremoveGetLast", channelA)
-            self.connectorLower.send_w(self.temp_w[0])
-            self.temp_w[0], self.temp_b[0] = self.connectorLower.receive_W()
-            self.connectorUpper.send_W(self.temp_w[0], False)
-        elif self.bit[channelA]:
-            # Domino:
-            # pushXremoveGetLast(A) v^ 
-            #                       wW
-            #                       --
-            # none                  -- 
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_W(self.temp_w[0], True)
+        pass
             
     #--- LIST OPERATIONS, reverse -----------------------------------------------------
 
     def reverseSimple(self, channelA, resultChannel):
         """For instructional purposes.
            Theta(n)xTheta(n)""" # propagation: \-|.
-        if not self.bit[channelA]:
-            # Domino:
-            # reverseSimple(A,R) -                   -         -
-            #                    -                   -         -
-            #                    W                   w         W
-            #            pull(A) ^ clear(R) (push(R) v pull(A) ^)*
-            self.word[resultChannel] = self.word[channelA]
-            self.bit[resultChannel] = False
-            self.connectorLower.send_o("pull", channelA)
-            self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-            self.connectorLower.send_o("clear", resultChannel)
-            while not self.bit[channelA]:
-                self.connectorLower.send_o("push", resultChannel)
-                self.connectorLower.send_w(self.word[resultChannel])
-                self.word[resultChannel] = self.word[channelA]
-                self.connectorLower.send_o("pull", channelA)
-                self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-        elif self.bit[channelA]:
-            # Domino:
-            # reverseSimple(A,R) 
-            #                    
-            #
-            # none
-            self.bit[resultChannel] = True
+        pass
 
     def reverse(self, channelA, resultChannel):
         """Theta(n)xTheta(n)""" # propagation: \-|.
-        if not self.bit[channelA]:
-            # Domino:
-            # reverse(A,R)  -                 --
-            #               -                 --
-            #               W                 wW
-            # pullXClear(A) ^ (pushXpull(A,R) v^)*
-            self.word[resultChannel] = self.word[channelA]
-            self.bit[resultChannel] = False
-            self.connectorLower.send_o("pullXclear",
-                                       channelA, resultChannel)
-            self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-            while not self.bit[channelA]:
-                self.connectorLower.send_o("pushXpull",
-                                           channelA, resultChannel)
-                self.connectorLower.send_w(self.word[resultChannel])
-                self.word[resultChannel] = self.word[channelA]
-                self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-        elif self.bit[channelA]:
-            # Domino:
-            # reverse(A,R)
-            #
-            #
-            # none
-            self.bit[resultChannel] = True
+        pass
 
     def pullXclear(self, channelA, channelB):
         """pull(A) x clear(B).
            Theta(1)xTheta(n), propagation: |."""
-        if not self.bit[channelA]:
-            # Domino:
-            # pullXclear(A,B) ^- 
-            #                 W-
-            #                 -W
-            #         pull(A) -^ 
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-            self.connectorLower.send_o("pull", channelA)
-            self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-            self.bit[channelB] = True
-        elif self.bit[channelA]:
-            # Domino:
-            # pullXclear(A,B) ^ 
-            #                 W
-            #                 -
-            # none            - 
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-            self.bit[channelB] = True
+        pass
 
     def pushXpull(self, channelA, channelB):
         """push(channelB) x pull(channelA)
            Theta(1)xTheta(n), propagation: |."""
-        if not self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # pushXpull(A,B) v-^- 
-            #                w-W-
-            #                -w-W
-            # pushXpull(A,B) -v-^ 
-            self.temp_w[0] = self.word[channelB]
-            self.word[channelB] = self.connectorUpper.receive_w()
-            self.connectorLower.send_o("pushXpull",
-                                       channelA, channelB)
-            self.connectorLower.send_w(self.temp_w[0])
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-            self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-        elif not self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # pushXpull(A,B)  v^- 
-            #                 wW-
-            #                 --W
-            # pullXclear(A,B) --^ 
-            self.word[channelB] = self.connectorUpper.receive_w()
-            self.bit[channelB] = False
-            self.extend() 
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-            self.connectorLower.send_o("pullXclear",
-                                       channelA, channelB)
-            self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-        elif self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # pushXpull(A,B) v-^ 
-            #                w-W
-            #                -w-
-            #        push(B) -v- 
-            self.temp_w[0] = self.word[channelB]
-            self.word[channelB] = self.connectorUpper.receive_w()
-            self.connectorLower.send_o("push", channelB)
-            self.connectorLower.send_w(self.temp_w[0])
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-        elif self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # pushXpull(A,B) v 
-            #                w
-            #                -
-            #       clear(B) - 
-            self.word[channelB] = self.connectorUpper.receive_w()
-            self.bit[channelB] = False
-            self.extend() 
-            self.connectorLower.send_o("clear", channelB)
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])        
+        pass
 
     # === ORDER OPERATIONS =====================================================
 
     def min(self, channelA):
         """Sends up the minimum element from the channel.
            Theta(n)xTheta(n), propagation: |/."""
-        if not self.bit[channelA]:
-            # Domino:
-            # min(A) -^ 
-            #        -W
-            #        W-
-            # min(A) ^- 
-            self.connectorLower.send_o("min", channelA)
-            self.temp_w[0], self.temp_b[0] = self.connectorLower.receive_W()
-            if self.temp_b[0]:
-                self.connectorUpper.send_W(self.word[channelA],
-                                           self.bit[channelA])
-            elif not self.temp_b[0]:
-                if self.temp_w[0] < self.word[channelA]:
-                    self.connectorUpper.send_W(self.temp_w[0], self.temp_b[0])
-                else:
-                    self.connectorUpper.send_W(self.word[channelA],
-                                               self.bit[channelA])
-        elif self.bit[channelA]:
-            # Domino:
-            # min(A) ^ 
-            #        W
-            #        -
-            # none   - 
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-
+        pass
+    
     #---------------------------------------------------------------------------  
     def memberND(self, channelA):
         """Precondition: channel elements are in non-decreasing order.
            O(n)xO(n), propagation: |/."""
-        if not self.bit[channelA]:
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            if self.word[channelA] == self.temp_w[0]:
-                # Domino:
-                # memberND(A) v^ 
-                #             wb
-                #             --
-                # none        -- 
-                self.connectorUpper.send_b(True)
-            elif self.word[channelA] > self.temp_w[0]:
-                # Domino:
-                # memberND(A) v^ 
-                #             wb
-                #             --
-                # none        -- 
-                self.connectorUpper.send_b(False)
-            else:
-                # Domino:
-                # memberND(A) v--^ 
-                #             w--b
-                #             -wb-
-                # memberND(A) -v^-  
-                self.connectorLower.send_o("memberND", channelA)
-                self.connectorLower.send_w(self.temp_w[0])
-                self.temp_b[0] = self.connectorLower.receive_b()
-                self.connectorUpper.send_b(self.temp_b[0])
-        elif self.bit[channelA]:
-            # Domino:
-            # memberND(A) v^ 
-            #             wb
-            #             --
-            # none        -- 
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_b(False)
+        pass
 
     #---------------------------------------------------------------------------  
     def insertND(self, channelA): 
         """Precondition: channel elements are in non-decreasing order.
            Theta(1)xTheta(n), propagation: |."""
-        if not self.bit[channelA]:
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            if self.temp_w[0] > self.word[channelA]:
-                # Domino:
-                # insertND(A) v- 
-                #             w-
-                #             -w
-                # insertND(A) -v 
-                self.connectorLower.send_o("insertND", channelA)
-                self.connectorLower.send_w(self.temp_w[0])
-            else:
-                # Domino:
-                # insertND(A) v- 
-                #             w-
-                #             -w
-                #     push(A) -v 
-                self.connectorLower.send_o("push", channelA)
-                self.connectorLower.send_w(self.word[channelA])
-                self.word[channelA] = self.temp_w[0]
-        elif self.bit[channelA]:
-            # Domino:
-            # insertND(A) v 
-            #             w
-            #             -
-            #    clear(A) - 
-            self.word[channelA] = self.connectorUpper.receive_w()
-            self.bit[channelA] = False
-            self.extend() 
-            self.connectorLower.send_o("clear", channelA)
+        pass
 
     #---------------------------------------------------------------------------  
     def insertUniqueI(self, channelA): 
         """Precondition: channel elements are in increasing order.
            Theta(1)xO(n), propagation: |."""
-        if not self.bit[channelA]:
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            if self.temp_w[0] > self.word[channelA]:
-                # Domino:
-                # insertUniqueI(A) v-
-                #                  w-
-                #                  -w
-                # insertUniqueI(A) -v 
-                self.connectorLower.send_o("insertUniqueI", channelA)
-                self.connectorLower.send_w(self.temp_w[0])
-            elif self.temp_w[0] < self.word[channelA]:
-                # Domino:
-                # insertUniqueI(A) v-
-                #                  w-
-                #                  -w
-                #          push(A) -v
-                self.connectorLower.send_o("push", channelA)
-                self.connectorLower.send_w(self.word[channelA])
-                self.word[channelA] = self.temp_w[0]
-            elif self.temp_w[0] == self.word[channelA]:
-                # Domino:
-                # insertUniqueI(A) v
-                #                  w
-                #                  -
-                # none             -
-                pass
-        elif self.bit[channelA]:
-            # Domino:
-            # insertUniqueI(A) v 
-            #                  w
-            #                  -
-            #         clear(A) - 
-            self.word[channelA] = self.connectorUpper.receive_w()
-            self.bit[channelA] = False
-            self.extend() 
-            self.connectorLower.send_o("clear", channelA)
+        pass
 
     #--- ORDER OPERATIONS, sorts -----------------------------------------------
     
@@ -1132,93 +601,17 @@ class CPE(threading.Thread):
            Theta(m)xTheta(m+n), 
            where m is the length of channelA, and n is the length of channelB."""
            # propagation: |-\
-        # Exercise: rewrite with pull(A)xclear(B) and insert(B)xpull(A).
-        if not self.bit[channelA]:
-            if self.bit[channelB]:
-                # Domino:
-                # insertAllND(A,B)   -                       -         -
-                #                    -                       -         -
-                #                    W                       w         W
-                #            pull(A) ^ clear(B) (insertND(B) v pull(A) ^)+
-                self.word[channelB] = self.word[channelA]
-                self.connectorLower.send_o("pull", channelA)
-                self.word[channelA], self.bit[channelA] = \
-                                         self.connectorLower.receive_W()
-                self.connectorLower.send_o("clear", channelB)
-                self.bit[channelB] = False
-            elif not self.bit[channelB]:
-                # Domino:
-                # insertAllND(A,B)   -         -
-                #                    -         -
-                #                    w         W
-                #       (insertND(B) v pull(A) ^)+
-                pass
-            while not self.bit[channelA]:  
-                self.connectorLower.send_o("insertND", channelB)
-                if self.word[channelA] >= self.word[channelB]:
-                    self.connectorLower.send_w(self.word[channelA])
-                elif self.word[channelA] < self.word[channelB]:
-                    self.connectorLower.send_w(self.word[channelB])
-                    self.word[channelB] = self.word[channelA] 
-                self.connectorLower.send_o("pull", channelA)
-                self.word[channelA], self.bit[channelA] = \
-                                     self.connectorLower.receive_W()
-        elif self.bit[channelA]:
-            # Domino:
-            # insertAllND(A,B) 
-            # 
-            # 
-            # none
-            pass
+        pass
 
     #---------------------------------------------------------------------------
     def iSort(self, channelA): 
         """Theta(n)xTheta(n)""" # propagation: |-\.
-        if not self.bit[channelA]:
-            # Domino:
-            # iSort(A) -                  --
-            #                    -                  --
-            #                    b                  ww
-            #     workFromEnd(A) ^ pullXinsertND(A) v^
-            self.connectorLower.send_o("workFromEnd", channelA)
-            self.connectorLower.receive_b() # just for synchronization
-            self.connectorLower.send_o("pullXinsertND", channelA) 
-            self.connectorLower.send_w(self.word[channelA]) 
-            self.temp_w[0] = self.connectorLower.receive_w()
-            if self.temp_w[0] < self.word[channelA]:
-                self.word[channelA] = self.temp_w[0]
-        elif self.bit[channelA]:
-            # Domino:
-            # iSort(A)
-            #
-            #
-            # none
-            pass
+        pass
         
     def workFromEnd(self, channelA): 
         """Theta(n)xTheta(n)""" # propagation: |-\.
-        if not self.bit[channelA]:
-            # Domino:
-            # workFromEnd(A) -^                  --
-            #                -b                  --
-            #                b-                  ww
-            # workFromEnd(A) ^- pullXinsertND(A) v^ 
-            self.connectorLower.send_o("workFromEnd", channelA)
-            self.connectorLower.receive_b() # just for synchronization
-            self.connectorUpper.send_b(Any) # just for synchronization
-            self.connectorLower.send_o("pullXinsertND", channelA) 
-            self.connectorLower.send_w(self.word[channelA])
-            self.temp_w[0] = self.connectorLower.receive_w()
-            if self.temp_w[0] < self.word[channelA]:
-                self.word[channelA] = self.temp_w[0]
-        elif self.bit[channelA]:
-            # Domino:
-            # workFromEnd(A) ^ 
-            #                b
-            #                -
-            # none           - 
-            self.connectorUpper.send_b(Any) # just for synchronization
-            
+        pass
+    
     def pullXinsertND(self, channelA):
         """Precondition: the part of the chain below the top element is sorted
            (non-decreasing).
@@ -1227,35 +620,7 @@ class CPE(threading.Thread):
            moves the top item into the gap.
            pull(A)XinsertND(A)
            Theta(1)xO(n)""" # propagation: \."""
-        if not self.bit[channelA]:
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_w(self.word[channelA])
-            if self.temp_w[0] > self.word[channelA]:
-                # Domino:   
-                # pullXinsertND(A) v^-- 
-                #                  ww--
-                #                  --ww               
-                # pullXinsertND(A) --v^ 
-                self.connectorLower.send_o("pullXinsertND", channelA)
-                self.connectorLower.send_w(self.temp_w[0])
-                self.word[channelA] = self.connectorLower.receive_w()
-                if self.temp_w[0] < self.word[channelA]:
-                    self.word[channelA] = self.temp_w[0]
-            elif self.temp_w[0] <= self.word[channelA]:
-                # Domino:
-                # pullXinsertND(A) v^
-                #                  ww
-                #                  --
-                # none             --
-                pass
-        elif self.bit[channelA]:
-            # Domino:
-            # pullXinsertND(A) v^ 
-            #                  ww
-            #                  --
-            # none             --  
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_w(self.temp_w[0])
+        pass
 
     #---------------------------------------------------------------------------
 
@@ -1332,30 +697,7 @@ class CPE(threading.Thread):
 
     def bSort(self, channelA):
         """Theta(n)xTheta(n), propagation: ."""
-        if not self.bit[channelA]:
-            # Domino:
-            # bSort(A)             --                  --
-            #                      --                  --
-            #                      wW                  wW
-            # bubbleDownBeginND(A) v^ (bubbleDownND(A) v^)*
-            self.connectorLower.send_o("bubbleDownBeginND", channelA)
-            self.connectorLower.send_w(self.word[channelA])
-            self.temp_w[0], self.temp_b[0] = self.connectorLower.receive_W()
-            if self.temp_b[0] and self.temp_w[0] < self.word[channelA]:
-                self.word[channelA] = self.temp_w[0]
-            while self.temp_b[0]:
-                self.connectorLower.send_o("bubbleDownND", channelA)
-                self.connectorLower.send_w(self.word[channelA])
-                self.temp_w[0], self.temp_b[0] = self.connectorLower.receive_W()
-                if self.temp_b[0] and self.temp_w[0] < self.word[channelA]:
-                    self.word[channelA] = self.temp_w[0]
-        elif self.bit[channelA]:
-            # Domino:
-            # bSort(A)  
-            #                     
-            #            
-            # none  
-            pass 
+        pass
             
     def bubbleDownBeginND(self, channelA):
         """Bubbles the biggest item to the bottom
@@ -1363,954 +705,75 @@ class CPE(threading.Thread):
            At this point the sorted part consists of this single item.
            This is a non-standard use of the bits: True does not mean empty.
            Theta(1)xTheta(n), propagation: ."""
-        if not self.bit[channelA]:
-            # Domino:
-            # bubbleDownBeginND(A) v^-- 
-            #                      wW--
-            #                      --wW
-            # bubbleDownBeginND(A) --v^ 
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_W(self.word[channelA], True)
-            if self.temp_w[0] > self.word[channelA]:
-                self.word[channelA] = self.temp_w[0]
-            self.connectorLower.send_o("bubbleDownBeginND", channelA)
-            self.connectorLower.send_w(self.word[channelA])
-            self.temp_w[0], self.bit[channelA] = self.connectorLower.receive_W()
-            if self.bit[channelA] and self.temp_w[0] < self.word[channelA]:
-                self.word[channelA] = self.temp_w[0]
-        elif self.bit[channelA]:
-            # Domino:
-            # bubbleDownBeginND(A) v^ 
-            #                      wW
-            #                      --
-            # none                 -- 
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_W(Any, False)
+        pass
 
     def bubbleDownND(self, channelA):
         """Bubbles the biggest item to the lowest CPE whose bit == True.
            Changes that bit to False.
            In this way one item has been added to the sorted part.
            Theta(1)xO(n), propagation: ."""
-        if self.bit[channelA]:
-            # Domino:
-            # bubbleDownBeginND(A) v^-- 
-            #                      wW--
-            #                      --wW
-            # bubbleDownBeginND(A) --v^ 
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_W(self.word[channelA], True)
-            if self.temp_w[0] > self.word[channelA]:
-                self.word[channelA] = self.temp_w[0]
-            self.connectorLower.send_o("bubbleDownND", channelA)
-            self.connectorLower.send_w(self.word[channelA])
-            self.temp_w[0], self.bit[channelA] = self.connectorLower.receive_W()
-            if self.bit[channelA] and self.temp_w[0] < self.word[channelA]:
-                self.word[channelA] = self.temp_w[0]
-        elif not self.bit[channelA]:
-            # Domino:
-            # bubbleDownBeginND(A) v^ 
-            #                      wW
-            #                      --
-            # none                 -- 
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorUpper.send_W(Any, False)
+        pass
 
     #--- ORDER OPERATIONS, merge -----------------------------------------------
 
     def mergeNDsimple(self, channelA, channelB, resultChannel): 
         """ """
-        if not self.bit[channelA] and not self.bit[channelB]:
-            if self.word[channelA] <= self.word[channelB]:
-                # Domino:
-                # mergeNDsimple(A,B,R) - 
-                #                      -
-                #                      w
-                #              push(B) v  mergeNDsimple(A,B,R)
-                self.connectorLower.send_o("push", channelB)
-                self.connectorLower.send_w(self.word[channelB])
-                self.connectorLower.send_o("mergeNDsimple", channelA, channelB,
-                                           resultChannel)
-                self.word[resultChannel] = self.word[channelA]
-                self.bit[resultChannel] = False
-            elif self.word[channelA] > self.word[channelB]:
-                # Domino:
-                # mergeNDsimple(A,B,R) - 
-                #                      -
-                #                      w
-                #              push(A) v  mergeNDsimple(A,B,R)
-                self.connectorLower.send_o("push", channelA)
-                self.connectorLower.send_w(self.word[channelA])
-                self.connectorLower.send_o("mergeNDsimple", channelA, channelB,
-                                           resultChannel)
-                self.word[resultChannel] = self.word[channelB]
-                self.bit[resultChannel] = False
-        elif not self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # mergeNDsimple(A,B,R)
-            # 
-            # 
-            # copy(A,R)
-            self.connectorLower.send_o("copy", channelA, resultChannel)
-            self.word[resultChannel] = self.word[channelA]
-            self.bit[resultChannel] = False
-        elif self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # mergeNDsimple(A,B,R)
-            # 
-            # 
-            # copy(B,R)
-            self.connectorLower.send_o("copy", channelB, resultChannel)
-            self.word[resultChannel] = self.word[channelB]
-            self.bit[resultChannel] = False
-        elif self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # mergeNDsimple(A,B,R)
-            # 
-            # 
-            # none
-            self.bit[resultChannel] = True
+        pass
 
     #---------------------------------------------------------------------------
     def mergeND(self, channelA, channelB): 
-        if not self.bit[channelB] and not self.bit[channelA]:
-            if self.word[channelB] <= self.word[channelA]:
-                # Domino:
-                # mergeNDsimple(A,B,R) - 
-                #                      -
-                #                      w
-                #              push(A) v  mergeNDsimple(A,B,R)
-                self.connectorLower.send_o("push", channelA)
-                self.connectorLower.send_w(self.word[channelA])
-                self.connectorLower.send_o("mergeND", channelA, channelB) 
-            elif self.word[channelB] > self.word[channelA]:
-                # Domino:
-                # mergeNDsimple(A,B,R) - 
-                #                      -
-                #                      w
-                #              push(B) v  mergeNDsimple(A,B,R)
-                self.connectorLower.send_o("push", channelB)
-                self.connectorLower.send_w(self.word[channelB])
-                self.connectorLower.send_o("mergeND", channelA, channelB)
-                self.word[channelB] = self.word[channelA]
-        elif not self.bit[channelB] and self.bit[channelA]:
-            # Domino:
-            # mergeND(A,B)
-            # 
-            # 
-            # none
-            pass
-        elif self.bit[channelB] and not self.bit[channelA]:
-            # Domino:
-            # mergeND(A,B)
-            # 
-            # 
-            # copy(A,B)
-            self.connectorLower.send_o("copy", channelA, channelB)
-            self.word[channelB] = self.word[channelA]
-            self.bit[channelB] = False
-        elif self.bit[channelB] and self.bit[channelA]:
-            # Domino:
-            # mergeND(A,B)
-            # 
-            # 
-            # none
-            pass
+        pass
 
     # === INDEXING OPERATIONS =============================================
 
     def length(self, channelA):
-        if self.bit[channelA]: # if CPE is empty
-            self.connectorUpper.send_w(0)
-        elif not self.bit[channelA]: # if CPE is not empty
-            self.connectorLower.send_o("lengthAux", channelA)
-            self.connectorLower.send_w(1)
-            self.temp_w[0] = self.connectorLower.receive_w()
-            self.connectorUpper.send_w(self.temp_w[0])
+        pass
 
     def lengthAux(self, channelA):
-        self.temp_w[0] = self.connectorUpper.receive_w()
-        if self.bit[channelA]: # if CPE is empty
-            self.connectorUpper.send_w(self.temp_w[0])
-        elif not self.bit[channelA]: # if CPE is not empty
-            self.connectorLower.send_o("lengthAux", channelA)
-            self.temp_w[0] += 1
-            self.connectorLower.send_w(self.temp_w[0])
-            self.temp_w[0] = self.connectorLower.receive_w()
-            self.connectorUpper.send_w(self.temp_w[0])
+        pass
 
     # ---------------------------------------------------------------------
 
     def getItem(self, channelA):
-        self.temp_w[0] = self.connectorUpper.receive_w() # index
-        if self.bit[channelA]: # if CPE is empty
-            self.connectorUpper.send_W(Any,True) # notFound=True
-        else: # CPE non-empty
-            if self.temp_w[0] == 0: # found it
-                self.connectorUpper.send_W(self.word[channelA], False)
-            else: # keep looking
-                self.temp_w[0] -= 1 # update index
-                self.connectorLower.send_o("getItem", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # send index
-                self.temp_w[0], self.temp_b[0] =self.connectorLower.receive_W()
-                self.connectorUpper.send_W(self.temp_w[0], self.temp_b[0])
+        pass
 
     # ---------------------------------------------------------------------
 
     def setItem0(self, channelA):
-        self.temp_w[0] = self.connectorUpper.receive_w() # index
-        self.temp_w[1] = self.connectorUpper.receive_w() # item
-        if self.bit[channelA]: # if CPE is empty
-            pass
-        else: # CPE non-empty
-            if self.temp_w[0] == 0: # found it
-                self.word[channelA] = self.temp_w[1]
-            else: # keep looking
-                self.temp_w[0] -= 1 # update index
-                self.connectorLower.send_o("setItem0", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # send index
-                self.connectorLower.send_w(self.temp_w[1]) # send item
+        pass
 
     def setItem(self, channelA):
-        self.temp_w[0] = self.connectorUpper.receive_w() # index
-        self.temp_w[1] = self.connectorUpper.receive_w() # item
-        if self.bit[channelA]: # if CPE is empty
-            self.connectorUpper.send_b(True)
-        else: # CPE non-empty
-            if self.temp_w[0] == 0: # found it
-                self.connectorUpper.send_b(False)
-                self.word[channelA] = self.temp_w[1]
-            else: # keep looking
-                self.temp_w[0] -= 1 # update index
-                self.connectorLower.send_o("setItem", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # send index
-                self.connectorLower.send_w(self.temp_w[1]) # send item
-                self.temp_b[0] = self.connectorLower.receive_b()
-                self.connectorUpper.send_b(self.temp_b[0])
-
+        pass
+    
     # ---------------------------------------------------------------------
 
     def getSetItem(self, channelA):
-        self.temp_w[0] = self.connectorUpper.receive_w() # index
-        self.temp_w[1] = self.connectorUpper.receive_w() # item
-        if self.bit[channelA]: # if CPE is empty
-            self.connectorUpper.send_W(Any,True) 
-        else: # CPE non-empty
-            if self.temp_w[0] == 0: # found it
-                self.connectorUpper.send_W(self.word[channelA], False)
-                self.word[channelA] = self.temp_w[1]
-            else: # keep looking
-                self.temp_w[0] -= 1 # update index
-                self.connectorLower.send_o("getSetItem", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # send index
-                self.connectorLower.send_w(self.temp_w[1]) # send item
-                self.temp_w[0], self.temp_b[0] =self.connectorLower.receive_W()
-                self.connectorUpper.send_W(self.temp_w[0], self.temp_b[0])
+        pass
 
     # ---------------------------------------------------------------------
 
     def memberIndex(self, channelA): 
-        if not self.bit[channelA]: # if CPE's channelA is non-empty
-            self.temp_w[0] = self.connectorUpper.receive_w() # item
-            if self.word[channelA] == self.temp_w[0]: # if found here
-            # Domino
-            # memberIndex v ^
-            #             w W
-            #             - -
-            # none        - -
-                self.connectorUpper.send_W(0,False) # index 0
-            else: # keep looking below
-            # Domino
-            # memberIndex    v - - - ^
-            #                w - - - W
-            #                - w w W -
-            # memberIndexAux - v v ^ -
-                self.connectorLower.send_o("memberIndexAux", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # item
-                self.connectorLower.send_w(0) # CPE's index
-                self.temp_w[0],self.temp_b[0] = self.connectorLower.receive_W()
-                self.connectorUpper.send_W(self.temp_w[0],self.temp_b[0])
-        elif self.bit[channelA]: # if current CPE terminates the list
-            # Domino
-            # memberIndex v ^
-            #             w W
-            #             - -
-            # none        - -            
-            _ = self.connectorUpper.receive_w()
-            self.connectorUpper.send_W(Any,True) # not found anywhere
+        pass
 
     def memberIndexAux(self, channelA): 
-        if not self.bit[channelA]: # if CPE's channelA is non-empty
-            self.temp_w[0] = self.connectorUpper.receive_w() # item
-            self.temp_w[1] = self.connectorUpper.receive_w() # index
-            self.temp_w[1] += 1 # update index
-            if self.word[channelA] == self.temp_w[0]: # found here
-            # memberIndexAux v v ^
-            #                w w W
-            #                - - W -
-            # none           - - ^ -                
-                self.connectorUpper.send_W(self.temp_w[1],False)
-            else: # keep looking below
-            # memberIndexAux v v - - - ^
-            #                w w - - - W
-            #                - - w w W -
-            # memberIndexAux - - v v ^ -            
-                self.connectorLower.send_o("memberIndexAux", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # item
-                self.connectorLower.send_w(self.temp_w[1]) # CPE's index
-                self.temp_w[0],self.temp_b[0] = self.connectorLower.receive_W()
-                self.connectorUpper.send_W(self.temp_w[0],self.temp_b[0])
-        elif self.bit[channelA]: # if current CPE terminates the list
-        # memberIndexAux v v ^
-        #                w w W
-        #                - - -
-        # none           - - -  
-            _ = self.connectorUpper.receive_w() # item
-            _ = self.connectorUpper.receive_w() # index
-            self.connectorUpper.send_W(Any,True) # not found anywhere
+        pass
 
     # ------------------------------------------------------------------------
 
     def insertAtIndex0(self, channelA):
-        if not self.bit[channelA]: # if CPE's channelA is non-empty
-            self.temp_w[0] = self.connectorUpper.receive_w() # index
-            self.temp_w[1] = self.connectorUpper.receive_w() # item
-            if self.temp_w[0] == 0: # index found
-                # insertAtIndex0 v v      - 
-                #                w w      - 
-                #                - -      w
-                #                - - push v
-                self.temp_w[0] = self.word[channelA] # old item
-                self.word[channelA] = self.temp_w[1] # put item in channelA
-                self.connectorLower.send_o("push", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # push old item
-            else: # index not found
-                # insertAtIndex0 v v               - - 
-                #                w w               - - 
-                #                - -               w w 
-                #                - - insertAtIndex v v 
-                self.temp_w[0] -= 1 # adjust index
-                self.connectorLower.send_o("insertAtIndex0", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # index
-                self.connectorLower.send_w(self.temp_w[1]) # item
-        elif self.bit[channelA]: # if current CPE terminates the list
-            # insertAtIndex0 v v ^   
-            #                w w b
-            #                - - -
-            #                - - - 
-            _ = self.connectorUpper.receive_w() # index
-            _ = self.connectorUpper.receive_w() # item
+        pass
 
     def insertAtIndex(self, channelA):
-        if not self.bit[channelA]: # if CPE's channelA is non-empty
-            self.temp_w[0] = self.connectorUpper.receive_w() # index
-            self.temp_w[1] = self.connectorUpper.receive_w() # item
-            if self.temp_w[0] == 0: # index found
-                # insertAtIndex v v ^      - 
-                #               w w b      - 
-                #               - - -      w
-                #               - - - push v
-                self.connectorUpper.send_b(False) # confirmation, index was good
-                self.temp_w[0] = self.word[channelA] # old item
-                self.word[channelA] = self.temp_w[1] # put item in channelA
-                self.connectorLower.send_o("push", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # push old item
-            else: # index not found
-                # insertAtIndex v v               - - - ^
-                #               w w               - - - b
-                #               - -               w w b -
-                #               - - insertAtIndex v v ^ -
-                self.temp_w[0] -= 1 # adjust index
-                self.connectorLower.send_o("insertAtIndex", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # index
-                self.connectorLower.send_w(self.temp_w[1]) # item
-                self.temp_b[0] = self.connectorLower.receive_b()
-                self.connectorUpper.send_b(self.temp_b[0])
-        elif self.bit[channelA]: # if current CPE terminates the list
-            # insertAtIndex v v ^   
-            #               w w b
-            #               - - -
-            #               - - - 
-            _ = self.connectorUpper.receive_w() # index
-            _ = self.connectorUpper.receive_w() # item
-            self.connectorUpper.send_b(True) # badIndex
+        pass
 
     # ------------------------------------------------------------------------
 
     def deleteAtIndex(self, channelA):
-        if not self.bit[channelA]: # if CPE's channelA is non-empty
-            self.temp_w[0] = self.connectorUpper.receive_w() # index
-            if self.temp_w[0] == 0: # index found
-                # deleteAtIndex v      - 
-                #               w      - 
-                #               -      W
-                #               - pull ^
-                self.connectorLower.send_o("pull", channelA)
-                self.word[channelA],self.bit[channelA] = \
-                    self.connectorLower.receive_W()
-            else: # index not found, keep looking
-                # deleteAtIndex v               - 
-                #               w               - 
-                #               -               w 
-                #               - deleteAtIndex v 
-                self.temp_w[0] -= 1 # adjust index
-                self.connectorLower.send_o("deleteAtIndex", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # index
-        elif self.bit[channelA]: # if current CPE terminates the list
-            # deleteAtIndex v   
-            #               w
-            #               -
-            #               -
-            _ = self.connectorUpper.receive_w() # index
+        pass
 
 
     def deleteGetAtIndex(self, channelA):
-        if not self.bit[channelA]: # if CPE's channelA is non-empty
-            self.temp_w[0] = self.connectorUpper.receive_w() # index
-            if self.temp_w[0] == 0: # index found
-                # deleteAtIndex v ^      - 
-                #               w b      - 
-                #               - -      W
-                #               - - pull ^
-                self.connectorUpper.send_W(self.word[channelA],False) #
-                self.connectorLower.send_o("pull", channelA)
-                self.word[channelA],self.bit[channelA] = \
-                    self.connectorLower.receive_W()
-            else: # index not found, keep looking
-                # deleteAtIndex v               - - ^
-                #               w               - - W
-                #               -               w W -
-                #               - deleteAtIndex v ^ -
-                self.temp_w[0] -= 1 # adjust index
-                self.connectorLower.send_o("deleteGetAtIndex", channelA)
-                self.connectorLower.send_w(self.temp_w[0]) # index
-                self.temp_w[0],self.temp_b[0] = self.connectorLower.receive_W()
-                self.connectorUpper.send_W(self.temp_w[0],self.temp_b[0])
-        elif self.bit[channelA]: # if current CPE terminates the list
-            # deleteAtIndex v ^   
-            #               w b
-            #               - -
-            #               - -
-            _ = self.connectorUpper.receive_w() # index
-            self.connectorUpper.send_W(Any,True) # badIndex
+        pass
 
 
-    # === LOADERS AND UNLOADERS ===========================================
-
-    def loadWords(self, channelA):
-        """Puts multiple words into the channel
-           with the first item at the top.
-           Each item is handled in Theta(1)xO(n), propagation: ."""
-        # Domino:
-        # loadWords(A)         v-
-        #                      W-
-        #                      -W
-        # clear(A) (addLast(A) -v)*
-        self.word[channelA], self.bit[channelA] = \
-                             self.connectorUpper.receive_W()
-        if not self.bit[channelA]:
-            self.extend()
-            self.connectorLower.send_o("clear", channelA)
-            self.temp_w[0], self.temp_b[0] = self.connectorUpper.receive_W()
-            while not self.temp_b[0]:
-                self.connectorLower.send_o("addLast", channelA)
-                self.connectorLower.send_w(self.temp_w[0])
-                self.temp_w[0], self.temp_b[0] = self.connectorUpper.receive_W()
-
-    def loadWordsReverse(self, channelA):
-        """Puts multiple words into the channel
-           with the first item at the bottom.
-           Each item is handled in Theta(1)xO(n), propagation: ."""
-        # Domino:
-        # loadWords(A) v+ 
-        #              W
-        #              -
-        # none         - 
-        self.word[channelA], self.bit[channelA] = \
-                             self.connectorUpper.receive_W()
-        if not self.bit[channelA]:
-            self.extend()
-            self.connectorLower.send_o("clear", channelA)
-            self.temp_w[0] = self.word[channelA]
-            self.word[channelA], self.bit[channelA] = \
-                                 self.connectorUpper.receive_W()
-            while not self.bit[channelA]:
-                self.connectorLower.send_o("push", channelA)
-                self.connectorLower.send_w(self.temp_w[0])
-                self.temp_w[0] = self.word[channelA]
-                self.word[channelA], self.bit[channelA] = \
-                                     self.connectorUpper.receive_W()
-            self.word[channelA] = self.temp_w[0]
-            self.bit[channelA] = False
-
-    #----LOADERS, ordered -----------------------------------------------------
-
-    def loadWordsND(self, channelA):
-        # Domino:
-        # loadWordsND(A)        v-
-        #                       W-
-        #                       -w
-        # clear(A) (insertND(A) -v)*
-        self.word[channelA], self.bit[channelA] = \
-                             self.connectorUpper.receive_W()
-        if not self.bit[channelA]:
-            self.extend()
-            self.connectorLower.send_o("clear", channelA)
-            self.temp_w[0], self.temp_b[0] = \
-                                 self.connectorUpper.receive_W()
-            while not self.temp_b[0]:
-                self.connectorLower.send_o("insertND", channelA)
-                if self.temp_w[0] >= self.word[channelA]:
-                    self.connectorLower.send_w(self.temp_w[0])
-                elif self.temp_w[0] < self.word[channelA]:
-                    self.connectorLower.send_w(self.word[channelA])
-                    self.word[channelA] = self.temp_w[0]
-                self.temp_w[0], self.temp_b[0] = \
-                                 self.connectorUpper.receive_W()
-
-    def loadWordsUniqueI(self, channelA):
-        # Domino:
-        # loadWordsI(A)        v-
-        #                      W-
-        #                      -w
-        # clear(A) (insertI(A) -v)*
-        self.word[channelA], self.bit[channelA] = \
-                             self.connectorUpper.receive_W()
-        if not self.bit[channelA]:
-            self.extend()
-            self.connectorLower.send_o("clear", channelA)
-            self.temp_w[0], self.temp_b[0] = \
-                                 self.connectorUpper.receive_W()
-            while not self.temp_b[0]:
-                if self.temp_w[0] > self.word[channelA]:
-                    self.connectorLower.send_o("insertUniqueI", channelA)
-                    self.connectorLower.send_w(self.temp_w[0])
-                elif self.temp_w[0] < self.word[channelA]:
-                    self.connectorLower.send_o("insertUniqueI", channelA)
-                    self.connectorLower.send_w(self.word[channelA])
-                    self.word[channelA] = self.temp_w[0]
-                elif self.temp_w[0] == self.word[channelA]:
-                    pass
-                self.temp_w[0], self.temp_b[0] = \
-                                 self.connectorUpper.receive_W()
-    # --- UNLOADERS ----------------------------------------------------
-
-    def unloadAllWords(self, channelA):
-        """Removes and sends up all words from the channel, leaving it empty.
-           with the top item handled first.
-           Each item is handled in Theta(1)xO(n), propagation: ."""
-        # Domino:
-        # unloadAllWords(A)  ^- 
-        #                    W-
-        #                    -W
-        #           (pull(A) -^)+
-        while True:
-            self.connectorUpper.send_W(self.word[channelA], self.bit[channelA])
-            if self.bit[channelA]:
-                break
-            self.connectorLower.send_o("pull", channelA)
-            self.word[channelA], self.bit[channelA] = \
-                                 self.connectorLower.receive_W()
-
-    # --- unloadWordsReverse helpers -----------------------------------
-
-    def moveLast(self, channelA, aux1):
-        """ """
-        if not self.bit[channelA]:
-            # Domino:
-            # moveLast(A,X) ^-
-            #               b-
-            #               -b
-            # moveLast(A,X) -^
-            self.connectorUpper.send_b(False)
-            self.connectorLower.send_o("moveLast", channelA, aux1)
-            self.bit[aux1] = not self.connectorLower.receive_b()
-            if not self.bit[aux1]:
-                self.word[aux1] = self.word[channelA]
-                self.bit[channelA] = True
-        elif self.bit[channelA]:
-            # Domino:
-            # moveLast(A,X) ^
-            #               b
-            #               -
-            # none          -
-            self.connectorUpper.send_b(True)
-            self.bit[aux1] = True 
-
-    def pullEnd(self, channelA, aux1):
-        """ """
-        if not self.bit[channelA] and self.bit[aux1]:
-            # Domino:
-            # pullEnd(A,X) ^-
-            #              W-
-            #              -W
-            # pullEnd(A,X) -^
-            self.connectorUpper.send_W(self.word[aux1], self.bit[aux1])
-            self.connectorLower.send_o("pullEnd", channelA, aux1)
-            self.word[aux1], self.bit[aux1] = self.connectorLower.receive_W()
-        elif not self.bit[channelA] and not self.bit[aux1]:
-            # Domino:
-            # pullEnd(A,X) ^-
-            #              W-
-            #              -W
-            # pullEnd(A,X) -^
-            self.connectorUpper.send_W(self.word[aux1], self.bit[aux1])
-            self.connectorLower.send_o("pullEnd", channelA, aux1)
-            self.word[aux1], self.bit[aux1] = self.connectorLower.receive_W()
-            if self.bit[aux1]:
-                self.word[aux1] = self.word[channelA]
-                self.bit[aux1] = False
-                self.bit[channelA] = True
-        elif self.bit[channelA] and not self.bit[aux1]:
-            # Domino:
-            # pullEnd(A,X) ^
-            #              W
-            #              -
-            # none         -
-            self.connectorUpper.send_W(self.word[aux1], self.bit[aux1])
-            self.bit[aux1] = True
-        elif self.bit[channelA] and self.bit[aux1]:
-            # Domino:
-            # pullEnd(A,X) ^
-            #              W
-            #              -
-            # none         -
-            self.connectorUpper.send_W(Any, True)
-
-    unloadWordsReverseNext = pullEnd
-
-    def unloadWordsReverseBegin(self, channelA, aux1):
-        """If channelA is empty, send up an empty word.
-            Otherwise, pulls up channelA from the end through aux1
-            and sends up the last channelA item."""
-        if self.bit[channelA]: # if top CPE is empty
-            # Domino:
-            # unloadWordsReverseBegin(A,X) ^
-            #                              W
-            #                              -
-            # none                         -
-            self.connectorUpper.send_W(Any, True)
-        elif not self.bit[channelA]: # if top CPE is not empty
-            # Domino:
-            # unloadWordsReverseBegin(A,X) -               -   ^
-            #                              -               -   W
-            #                              b               W   -
-            #                moveLast(A,X) ^ (pullEnd(A,X) ^)* -
-            self.connectorLower.send_o("moveLast", channelA, aux1)
-            empty = self.connectorLower.receive_b()
-            if empty: # if channelA below is empty:
-                self.connectorUpper.send_W(self.word[channelA], False)
-                self.bit[channelA] = True
-            else:
-                while True:
-                    self.connectorLower.send_o("pullEnd", channelA, aux1)
-                    self.word[aux1], self.bit[aux1] = \
-                                     self.connectorLower.receive_W()
-                    if not self.bit[aux1]:
-                        break
-                self.connectorUpper.send_W(self.word[aux1], False)
-                self.connectorLower.send_o("pullEnd", channelA, aux1)
-                self.word[aux1], self.bit[aux1] = \
-                                 self.connectorLower.receive_W()
-                if self.bit[aux1]:
-                    self.word[aux1] = self.word[channelA]
-                    self.bit[aux1] = False
-                    self.bit[channelA] = True
-
-    def unloadAllWordsReverse(self, channelA, aux1):
-        """ """
-        if self.bit[channelA]: # if top CPE is empty
-            # Domino:
-            # unloadAllWordsReverse(A,X) ^
-            #                            W
-            #                            -
-            # none                       -
-            self.connectorUpper.send_W(Any, True)
-        elif not self.bit[channelA]: # if top CPE is not empty
-        # Domino:
-        # unloadAllWordsReverse(A,X) -               -                 -^   ^
-        #                            -               -                 -W   W
-        #                            b               W                 W-   -
-        #              moveLast(A,X) ^ (pullEnd(A,X) ^)* (pullEnd(A,X) ^-)* -
-            self.connectorLower.send_o("moveLast", channelA, aux1)
-            empty = self.connectorLower.receive_b()
-            if empty: # if channelA below is empty:
-                self.connectorUpper.send_W(self.word[channelA], False)
-                self.connectorUpper.send_W(Any, True)
-            else: # if channelA below is not empty:
-                valueObtined = False # Received a non-empty word? False.
-                while True:
-                    self.connectorLower.send_o("pullEnd", channelA, aux1)
-                    self.word[aux1], self.bit[aux1] = \
-                                     self.connectorLower.receive_W()
-                    if not self.bit[aux1]: # if not empty
-                        valueObtined = True
-                        self.connectorUpper.send_W(self.word[aux1],
-                                                   self.bit[aux1])
-                    if valueObtined and self.bit[aux1]:
-                        break
-                self.connectorUpper.send_W(self.word[channelA], False)
-                self.connectorUpper.send_W(Any, True)
-
-    #### ARITHMETIC ########################################################
-
-    def loadFirstWord(self, channelA):
-        """Theta(1)xTheta(1), non-propagating."""
-        # Domino:
-        # loadFirstWord(A) v
-        #                  w
-        #                  -
-        # none             -
-        self.word[channelA] = self.connectorUpper.receive_w()
-        self.bit[channelA] = False # continuation bit
-
-    def loadNextWord(self, channelA):
-        """Theta(1)xTheta(n), propagation |."""
-        if self.bit[channelA]: # continuation bit
-            # Domino:
-            # loadNextWord(A) v-
-            #                 w-
-            #                 -w
-            # loadNextWord(A) -v  
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.connectorLower.send_o("loadNextWord", channelA)
-            self.connectorLower.send_w(self.temp_w[0])
-        elif not self.bit[channelA]: # continuation bit
-            # Domino:
-            # loadNextWord(A)  v-
-            #                  w-
-            #                  -w
-            # loadFirstWord(A) -v  
-            self.temp_w[0] = self.connectorUpper.receive_w()
-            self.bit[channelA] = True # continuation bit
-            self.extend()
-            self.connectorLower.send_o("loadFirstWord", channelA)
-            self.connectorLower.send_w(self.temp_w[0])
-
-    def equal(self, channelA, channelB):
-        """O(n)xO(n), propagation |/."""
-        if self.bit[channelA] and self.bit[channelB]:
-            if self.word[channelA] != self.word[channelB]:
-                # Domino:
-                # equal(A,B) ^
-                #            b
-                #            -
-                # equal(A,B) -
-                self.connectorUpper.send_b(False)
-            elif self.word[channelA] == self.word[channelB]:
-                # Domino:
-                # equal(A,B) -^
-                #            -b
-                #            b-
-                # equal(A,B) ^-
-                self.connectorLower.send_o("equal", channelA, channelB)
-                self.temp_b[0] = self.connectorLower.receive_b()
-                self.connectorUpper.send_b(self.temp_b[0])
-        elif self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # equal(A,B) ^
-            #            b
-            #            -
-            # equal(A,B) -
-            self.connectorUpper.send_b(False)
-        elif not self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # equal(A,B) ^
-            #            b
-            #            -
-            # equal(A,B) -
-            self.connectorUpper.send_b(False)
-        elif not self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # equal(A,B) ^
-            #            b
-            #            -
-            # equal(A,B) -
-            if self.word[channelA] != self.word[channelB]:
-                self.connectorUpper.send_b(False)
-            elif self.word[channelA] == self.word[channelB]:
-                self.connectorUpper.send_b(True)
-
-    def le(self, channelA, channelB):
-        """O(n)xO(n), propagation |/."""
-        if self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # le(A,B) -^
-            #         -B
-            #         B-
-            # le(A,B) ^-
-            self.connectorLower.send_o("le", channelA, channelB)
-            self.temp_b[0], self.temp_b[1] = self.connectorLower.receive_B()
-            if self.temp_b[1]: # if sure
-                self.connectorUpper.send_B(self.temp_b[0], True) # that, sure
-            else: # if not sure
-                if self.word[channelA] < self.word[channelB]:
-                    self.connectorUpper.send_B(True, True) # true, sure
-                elif self.word[channelA] > self.word[channelB]:
-                    self.connectorUpper.send_B(False, True) # false, sure
-                elif self.word[channelA] == self.word[channelB]:
-                    self.connectorUpper.send_B(True, False) # true, maybe
-        elif self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # le(A,B) ^
-            #         B
-            #         -
-            # none    -
-            self.connectorUpper.send_B(False, True) # true, sure
-        elif not self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # le(A,B) ^
-            #         B
-            #         -
-            # none    -
-            self.connectorUpper.send_B(True, True) # true, sure
-        elif not self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # le(A,B) ^
-            #         B
-            #         -
-            # none    -
-            if self.word[channelA] < self.word[channelB]:
-                self.connectorUpper.send_B(True, True) # true, sure
-            elif self.word[channelA] > self.word[channelB]:
-                self.connectorUpper.send_B(False, True) # false, sure
-            elif self.word[channelA] == self.word[channelB]:
-                self.connectorUpper.send_B(True, False) # true, maybe
-
-    def less(self, channelA, channelB):
-        """O(n)xO(n), propagation |/."""
-        if self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # less(A,B) -^
-            #           -B
-            #           B-
-            # less(A,B) ^-
-            self.connectorLower.send_o("less", channelA, channelB)
-            self.temp_b[0], self.temp_b[1] = self.connectorLower.receive_B()
-            if self.temp_b[1]: # if sure
-                self.connectorUpper.send_B(self.temp_b[0], True) # that, sure 
-            else: # if not sure
-                if self.word[channelA] < self.word[channelB]:
-                    self.connectorUpper.send_B(True, True) # true, sure
-                elif self.word[channelA] > self.word[channelB]:
-                    self.connectorUpper.send_B(False, True) # false, sure
-                elif self.word[channelA] == self.word[channelB]:
-                    self.connectorUpper.send_B(False, False) # false, maybe
-        elif self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # less(A,B) ^
-            #           B
-            #           -
-            # none      -
-            self.connectorUpper.send_B(False, True) # true, sure
-        elif not self.bit[channelA] and self.bit[channelB]:
-            # Domino:
-            # less(A,B) ^
-            #           B
-            #           -
-            # none      -
-            self.connectorUpper.send_B(True, True) # true, sure
-        elif not self.bit[channelA] and not self.bit[channelB]:
-            # Domino:
-            # less(A,B) ^
-            #           B
-            #           -
-            # none      -
-            if self.word[channelA] < self.word[channelB]:
-                self.connectorUpper.send_B(True, True) # true, sure
-            elif self.word[channelA] > self.word[channelB]:
-                self.connectorUpper.send_B(False, True) # false, sure
-            elif self.word[channelA] == self.word[channelB]:
-                self.connectorUpper.send_B(False, False) # false, maybe
-
-    def copyInt(self, channelA, resultChannel):
-        """ """
-        if self.bit[channelA]: # if continued
-            # Domino:
-            # copyInt(A,R) 
-            #           
-            #           
-            # copyInt(A,R)
-            self.word[resultChannel] = self.word[channelA]
-            self.bit[resultChannel] = True
-            self.connectorLower.send_o("copyInt", channelA, resultChannel)
-        elif not self.bit[channelA]: # if last word
-            # Domino:
-            # copyInt(A,R) 
-            #           
-            #           
-            # none
-            self.word[resultChannel] = self.word[channelA]
-            self.bit[resultChannel] = False
-
-    def conj(self, channelA, channelB, resultChannel):
-        """Theta(n)xTheta(n) where n is the length of the shorter integer."""
-        # todo: this code can produce 0-words at the end, remove them!
-        # Domino:
-        # conj(A,B,R) 
-        #           
-        #           
-        # conj(A,B,R) 
-        if self.bit[channelA] and self.bit[channelB]: # if continued
-            self.word[resultChannel] = self.word[channelA] & self.word[channelB]
-            self.bit[resultChannel] = True
-            self.connectorLower.send_o("conj", channelA, channelB,
-                                       resultChannel)
-        elif self.bit[channelA] and not self.bit[channelB]:
-            self.word[resultChannel] = self.word[channelA] & self.word[channelB]
-            self.bit[resultChannel] = False
-        elif not self.bit[channelA] and self.bit[channelB]:
-            self.word[resultChannel] = self.word[channelA] & self.word[channelB]
-            self.bit[resultChannel] = False
-        elif not self.bit[channelA] and not self.bit[channelB]: # if last words
-            self.word[resultChannel] = self.word[channelA] & self.word[channelB]
-            self.bit[resultChannel] = False
-
-    def disj(self, channelA, channelB, resultChannel):
-        """Theta(1)xTheta(n) where n is the length of the longer integer."""
-        # Domino:
-        # disj(A,B,R) 
-        #           
-        #           
-        # disj(A,B,R)
-        if self.bit[channelA] and self.bit[channelB]: # if continued
-            self.word[resultChannel] = self.word[channelA] | self.word[channelB]
-            self.bit[resultChannel] = True
-            self.connectorLower.send_o("disj", channelA, channelB,
-                                       resultChannel)
-        elif self.bit[channelA] and not self.bit[channelB]:
-            self.word[resultChannel] = self.word[channelA] | self.word[channelB]
-            self.bit[resultChannel] = True
-            self.connectorLower.send_o("copyInt", channelA, resultChannel)
-        elif not self.bit[channelA] and self.bit[channelB]:
-            self.word[resultChannel] = self.word[channelA] | self.word[channelB]
-            self.bit[resultChannel] = True
-            self.connectorLower.send_o("copyInt", channelB, resultChannel)
-        elif not self.bit[channelA] and not self.bit[channelB]: # if last words
-            self.word[resultChannel] = self.word[channelA] | self.word[channelB]
-            self.bit[resultChannel] = False
-
-    def exdisj(self, channelA, channelB, resultChannel):
-        """Theta(1)xTheta(n) where n is the length of the longer integer."""
-        # Domino:
-        # disj(A,B,R) 
-        #           
-        #           
-        # disj(A,B,R)
-        if self.bit[channelA] and self.bit[channelB]: # if continued
-            self.word[resultChannel] = self.word[channelA] ^ self.word[channelB]
-            self.bit[resultChannel] = True
-            self.connectorLower.send_o("disj", channelA, channelB,
-                                       resultChannel)
-        elif self.bit[channelA] and not self.bit[channelB]:
-            self.word[resultChannel] = self.word[channelA] ^ self.word[channelB]
-            self.bit[resultChannel] = True
-            self.connectorLower.send_o("copyInt", channelA, resultChannel)
-        elif not self.bit[channelA] and self.bit[channelB]:
-            self.word[resultChannel] = self.word[channelA] ^ self.word[channelB]
-            self.bit[resultChannel] = True
-            self.connectorLower.send_o("copyInt", channelB, resultChannel)
-        elif not self.bit[channelA] and not self.bit[channelB]: # if last words
-            self.word[resultChannel] = self.word[channelA] ^ self.word[channelB]
-            self.bit[resultChannel] = False
-
+###############################################################################

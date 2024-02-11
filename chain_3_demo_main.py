@@ -149,8 +149,8 @@ def demo(chainListsInitial, *args):
 
 # ==============================================================================
 
-def chainDemo(): 
-    print("============== SHowing chains ====================")
+def setupChainDemo(): 
+    print("============== Showing chains ====================")
     
     print("demo([], True) -- this prints a chain with empty channels/lists,")
     print("where True forces a detailed view.")
@@ -173,7 +173,7 @@ def chainDemo():
     
     print("-------------------------------------------------------------------")
     
-#chainDemo()
+#setupChainDemo()
 
 # === LIST OPERATIONS, stack, queue operations ===========================================
 
@@ -194,7 +194,7 @@ def stackDemo():
          "top(CHANNEL)",     EmptyError, Same
         )
          
-stackDemo()
+#stackDemo()
 
 def queueDemo():
     print("============== queue operations ===================================")
@@ -1325,619 +1325,12 @@ def deleteGetAtIndexDemo():
 
 #deleteGetAtIndexDemo()
 
-# ==== LOADERS AND UNLOADERS ===================================================
-
-def loadWordsSimpleDemo():
-    DETAILED = False
-    print("========= loadWordsSimple ====================================================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsSimple(CHANNEL, [1,2,3]):")
-    chain.loadWordsSimple(CHANNEL, [1,2,3])
-    chain.report(detailed=DETAILED)
-    print()
-
-    print("loadWordsSimple(CHANNEL, []):")
-    chain.loadWordsSimple(CHANNEL, [])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#loadWordsSimpleDemo()
-
-def loadWordsDemo():
-    DETAILED = False
-    print("========= loadWords ====================================================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWords(CHANNEL, [1,2,3]):")
-    chain.loadWords(CHANNEL, [1,2,3])
-    chain.report(detailed=DETAILED)
-    print()
-
-    print("loadWords(CHANNEL, []):")
-    chain.loadWords(CHANNEL, [])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#loadWordsDemo()
-
-def loadWordsReverseSimpleDemo():
-    DETAILED = False
-    print("========= loadWordsReverseSimple =============================================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverseSimple(CHANNEL, []):")
-    chain.loadWordsReverseSimple(CHANNEL, [])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverseSimple(CHANNEL, [1]):")
-    chain.loadWordsReverseSimple(CHANNEL, [1])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverseSimple(CHANNEL, [1,2]):")
-    chain.loadWordsReverseSimple(CHANNEL, [1,2])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverseSimple(CHANNEL, [1,2,3,4,5]):")
-    chain.loadWordsReverseSimple(CHANNEL, [1,2,3,4,5])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverseSimple(CHANNEL, [1,2]):")
-    chain.loadWordsReverseSimple(CHANNEL, [1,2])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    
-#loadWordsReverseSimpleDemo()
-    
-def loadWordsReverseDemo():
-    DETAILED = False
-    print("========= loadWordsReverse =============================================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverse(CHANNEL, []):")
-    chain.loadWordsReverse(CHANNEL, [])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverse(CHANNEL, [1]):")
-    chain.loadWordsReverse(CHANNEL, [1])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverse(CHANNEL, [1,2]):")
-    chain.loadWordsReverse(CHANNEL, [1,2])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverse(CHANNEL, [1,2,3,4,5]):")
-    chain.loadWordsReverse(CHANNEL, [1,2,3,4,5])
-    chain.report(detailed=DETAILED)
-    print("loadWordsReverse(CHANNEL, [1,2]):")
-    chain.loadWordsReverse(CHANNEL, [1,2])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    
-#loadWordsReverseDemo()
-
-def loadWordsNonDecreasingSimpleDemo():
-    DETAILED = False
-    print("============== loadWordsNonDecreasingSimpleDemo ============================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print()
-    print("loadWordsNonDecreasingSimple(CHANNEL, [2,4,1,5,2,3]):")
-    chain.loadWordsNonDecreasingSimple(CHANNEL, [2,4,1,5,2,3])
-    chain.report(detailed=DETAILED)
-    print()
-    print("loadWordsNonDecreasingeSimple(CHANNEL, []):")
-    chain.loadWordsNonDecreasingSimple(CHANNEL, [])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#loadWordsNonDecreasingSimpleDemo()
-
-def loadWordsNonDecreasingDemo():
-    DETAILED = False
-    print("============== loadWordsNonDecreasingDemo ============================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print()
-    print("loadWordsNonDecreasing(CHANNEL, [2,4,1,5,2,3]):")
-    chain.loadWordsNonDecreasing(CHANNEL, [2,4,1,5,2,3])
-    chain.report(detailed=DETAILED)
-    print()
-    print("loadWordsNonDecreasinge(CHANNEL, []):")
-    chain.loadWordsNonDecreasing(CHANNEL, [])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#loadWordsNonDecreasingDemo()
-
-def loadWordsUniqueIncreasingSimpleDemo():
-    DETAILED = False
-    print("============== loadWordsUniqueIncreasingSimpleDemo ============================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print()
-    print("loadWordsUniqueIncreasingSimple(CHANNEL, [2,4,1,3,5,2,3,1]):")
-    chain.loadWordsUniqueIncreasingSimple(CHANNEL, [2,4,1,3,5,2,3,1])
-    chain.report(detailed=DETAILED)
-    print()
-    print("loadWordsUniqueIncreasingSimple(CHANNEL, []):")
-    chain.loadWordsUniqueIncreasingSimple(CHANNEL, [])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#loadWordsUniqueIncreasingSimpleDemo()
-
-def loadWordsUniqueIncreasingDemo():
-    DETAILED = False
-    print("============== loadWordsUniqueIncreasingDemo ============================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print()
-    print("loadWordsUniqueIncreasing(CHANNEL, [2,4,1,3,5,2,3,1]):")
-    chain.loadWordsUniqueIncreasing(CHANNEL, [2,4,1,3,5,2,3,1])
-    chain.report(detailed=DETAILED)
-    print()
-    print("loadWordsUniqueIncreasing(CHANNEL, []):")
-    chain.loadWordsUniqueIncreasing(CHANNEL, [])
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#loadWordsUniqueIncreasingDemo()
-
-def unloadWordsDemo(): 
-    DETAILED = False
-    print("========= unloadWords ==================================================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("unloadWords:")
-    for item in chain.unloadWords(CHANNEL):
-        print(item)
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1])
-    chain.report(detailed=DETAILED)
-    print("unloadWords:")
-    for item in chain.unloadWords(CHANNEL):
-        print(item)
-    chain.report(detailed=DETAILED); print()
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2])
-    chain.report(detailed=DETAILED)
-    print("unloadWords:")
-    for item in chain.unloadWords(CHANNEL):
-        print(item)
-    chain.report(detailed=DETAILED); print()
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3])
-    chain.report(detailed=DETAILED)
-    print("unloadWords:")
-    for item in chain.unloadWords(CHANNEL):
-        print(item)
-    chain.report(detailed=DETAILED); print()
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#unloadWordsDemo()
-
-def unloadAllWordsDemo(): 
-    DETAILED = False
-    print("========= unloadAllWords =======================================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("unloadAllWords:")
-    for item in chain.unloadAllWords(CHANNEL):
-        print(item)
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3])
-    chain.report(detailed=DETAILED)
-    print("unloadAllWords:")
-    for item in chain.unloadAllWords(CHANNEL):
-        print(item)
-    chain.report(detailed=DETAILED); print()
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#unloadAllWordsDemo()  
-
-def unloadWordsReverseComponentsDemo():
-    DETAILED = False
-    print("============== unloadWordsReverse components =========================")
-    chain = ChainController([1,2,3,4,5])
-    print("chain:")
-    chain.report(detailed=DETAILED); print()
-
-    empty = chain.moveLast(CHANNEL, AUX)
-    print("copyLast =", empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-    
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3,4,5])
-    print("chain:")
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.unloadWordsReverseBegin(CHANNEL, AUX)
-    print("unloadWordsReverseBegin =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-
-    data, empty = chain.pullEnd(CHANNEL, AUX)
-    print("pullEnd =", data, empty)
-    chain.report(detailed=DETAILED); print()
-    
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#unloadWordsReverseComponentsDemo()
-
-def unloadWordsReverseSimpleDemo(): 
-    DETAILED = False
-    print("============== unloadWordsReverseSimple ====================================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("iterating over []:")
-    for item in chain.unloadWordsReverseSimple(CHANNEL, AUX):
-        print(item)
-        chain.report(detailed=DETAILED)
-    print("Done")
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1])
-    chain.report(detailed=DETAILED)
-    print("iterating over [1]:")
-    for item in chain.unloadWordsReverseSimple(CHANNEL, AUX):
-        print(item)
-        chain.report(detailed=DETAILED)
-    print("Done")
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3,4,5])
-    chain.report(detailed=DETAILED)
-    print("iterating over [1,2,3,4,5]:")
-    for item in chain.unloadWordsReverseSimple(CHANNEL, AUX):
-        print(item)
-        chain.report(detailed=DETAILED)
-    print("Done")
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3,4,5,6])
-    chain.report(detailed=DETAILED)
-    print("iterating over [1,2,3,4,5,6]:")
-    for item in chain.unloadWordsReverseSimple(CHANNEL, AUX):
-        print(item)
-        chain.report(detailed=DETAILED)
-    print("Done")
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#unloadWordsReverseSimpleDemo()
-
-def unloadWordsReverseDemo(): 
-    DETAILED = False
-    print("============== unloadWordsReverse ====================================")
-    chain = ChainController([])
-    chain.report(detailed=DETAILED)
-    print("iterating over []:")
-    for item in chain.unloadWordsReverse(CHANNEL, AUX):
-        print(item)
-        chain.report(detailed=DETAILED)
-    print("Done")
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1])
-    chain.report(detailed=DETAILED)
-    print("iterating over [1]:")
-    for item in chain.unloadWordsReverse(CHANNEL, AUX):
-        print(item)
-        chain.report(detailed=DETAILED)
-    print("Done")
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3,4,5])
-    chain.report(detailed=DETAILED)
-    print("iterating over [1,2,3,4,5]:")
-    for item in chain.unloadWordsReverse(CHANNEL, AUX):
-        print(item)
-        chain.report(detailed=DETAILED)
-    print("Done")
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3,4,5,6])
-    chain.report(detailed=DETAILED)
-    print("iterating over [1,2,3,4,5,6]:")
-    for item in chain.unloadWordsReverse(CHANNEL, AUX):
-        print(item)
-        chain.report(detailed=DETAILED)
-    print("Done")
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#unloadWordsReverseDemo()
-    
-def unloadAllWordsReverseDemo(): 
-    DETAILED = False
-    print("============== unloadAllWordsReverse ======================================")
-
-    chain = ChainController([])
-    print("iterating:")
-    for item in chain.unloadAllWordsReverse(CHANNEL, AUX):
-        print(item)
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1])
-    chain.report(detailed=DETAILED)
-    print("iterating:")
-    for item in chain.unloadAllWordsReverse(CHANNEL, AUX):
-        print(item)
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2])
-    chain.report(detailed=DETAILED)
-    print("iterating:")
-    for item in chain.unloadAllWordsReverse(CHANNEL, AUX):
-        print(item)
-    chain.report(detailed=DETAILED)
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3,4,5])
-    chain.report(detailed=DETAILED)
-    print("iterating:")
-    for item in chain.unloadAllWordsReverse(CHANNEL, AUX):
-        print(item)
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-    chain = ChainController([1,2,3,4,5,6])
-    chain.report(detailed=DETAILED)
-    print("iterating:")
-    for item in chain.unloadAllWordsReverse(CHANNEL, AUX):
-        print(item)
-    chain.report(detailed=DETAILED)
-    chain.stop()
-    print("-------------------------------------------------------------------")
-
-#unloadAllWordsReverseDemo()
-
-# ==== ARITHMETIC ==============================================================
-    
-def loadIntegerDemo():
-    DETAILED = True
-    print("========== loadInteger, report, register2... ======================")
-    chain = ChainController([])
-    
-    chain.loadInteger(CHANNEL, [0b00,0b01,0b10,0b11])
-    print("loadInteger(CHANNEL, [0b00,0b01,0b10,0b11])")
-    
-    print()
-    chain.report(base=5, detailed=DETAILED)
-    print()
-    chain.report(base=2, detailed=DETAILED)
-    print()
-    chain.report(base=4, detailed=DETAILED)
-    print()
-    chain.report(base=8, detailed=DETAILED)
-    print()
-    chain.report(base=16, detailed=DETAILED)
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL, [0b00,0b00,0b01])
-    print("loadInteger(CHANNEL, [0b00,0b00,0b01]")
-    chain.report(base=4, detailed=DETAILED)
-    
-    print()
-    print("register2list base=10:", chain.register2list(CHANNEL))
-    print("register2list base=2:", chain.register2list(CHANNEL, base=2))
-    print("register2list base=4:", chain.register2list(CHANNEL, base=4))
-    print("register2list base=8:", chain.register2list(CHANNEL, base=8))
-    print("register2list base=16:", chain.register2list(CHANNEL, base=16))
-    print()
-    print("register2integer base=10", chain.register2integer(CHANNEL, base=10))
-    print("register2integer base=2", chain.register2integer(CHANNEL, base=2))
-    print("register2integer base=4", chain.register2integer(CHANNEL, base=4))
-    print("register2integer base=8", chain.register2integer(CHANNEL, base=8))
-    print("register2integer base=16", chain.register2integer(CHANNEL, base=16))
-    
-    chain.stop()
-
-#loadIntegerDemo()
-
-#NEEDS WORK
-    
-def equalDemo():
-    DETAILED = True
-    print("============== equal ======================================")
-    chain = ChainController([])
-    
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10,0b11])
-    chain.report(detailed=DETAILED)
-    print("equal =", chain.equal(CHANNEL0, CHANNEL1), "(True)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10,0b11])
-    chain.report(detailed=DETAILED)
-    print("equal =", chain.equal(CHANNEL0, CHANNEL1), "(False)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10])
-    chain.report(detailed=DETAILED)
-    print("equal =", chain.equal(CHANNEL0, CHANNEL1), "(False)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b11,0b11])
-    chain.report(detailed=DETAILED)
-    print("equal =", chain.equal(CHANNEL0, CHANNEL1), "(False)")
-    
-    chain.stop()
-
-# equalDemo()
-
-    
-def lessOrEqualDemo():
-    DETAILED = True
-    print("============== lessOrEqual ======================================")
-    chain = ChainController([])
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10,0b11])
-    chain.report(detailed=DETAILED)
-    print("lessOrEqual =", chain.lessOrEqual(CHANNEL0, CHANNEL1), "(True)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10,0b11])
-    chain.report(detailed=DETAILED)
-    print("lessOrEqual =", chain.lessOrEqual(CHANNEL0, CHANNEL1), "(True)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10])
-    chain.report(detailed=DETAILED)
-    print("lessOrEqual =", chain.lessOrEqual(CHANNEL0, CHANNEL1), "(False)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b11,0b11])
-    chain.report(detailed=DETAILED)
-    print("lessOrEqual =", chain.lessOrEqual(CHANNEL0, CHANNEL1), "(True)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b11,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10,0b11])
-    chain.report(detailed=DETAILED)
-    print("lessOrEqual =", chain.lessOrEqual(CHANNEL0, CHANNEL1), "(False)")
-
-    chain.stop()
-
-#lessOrEqualDemo()
-
-def lessDemo():
-    DETAILED = True
-    print("============== less ======================================")
-    chain = ChainController([])
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10,0b11])
-    chain.report(detailed=DETAILED)
-    print("less =", chain.less(CHANNEL0, CHANNEL1), "(False)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10,0b11])
-    chain.report(detailed=DETAILED)
-    print("less =", chain.less(CHANNEL0, CHANNEL1), "(True)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10])
-    chain.report(detailed=DETAILED)
-    print("less =", chain.less(CHANNEL0, CHANNEL1), "(False)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b10,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b11,0b11])
-    chain.report(detailed=DETAILED)
-    print("less =", chain.less(CHANNEL0, CHANNEL1), "(True)")
-    print("------------------------------------------------------")
-    chain.loadInteger(CHANNEL0, [0b00,0b01,0b11,0b11])
-    chain.loadInteger(CHANNEL1, [0b00,0b01,0b10,0b11])
-    chain.report(detailed=DETAILED)
-    print("less =", chain.less(CHANNEL0, CHANNEL1), "(False)")
-    
-    chain.stop()
-
-#lessDemo()
-
 #===============================================================================
 
 def main():
     pass
 
-    #setupChainDemo()
+    setupChainDemo()
 
     # --- LIST OPERATIONS
     
@@ -1945,7 +1338,7 @@ def main():
     #queueDemo()
     
     #isEmptyDemo()
-    #clearDemo()
+    clearDemo()
     #clear2Demo()
     #firstDemo()
     
@@ -1953,7 +1346,7 @@ def main():
     #moveDemo()
     #swapDemo()
     #setAllDemo()
-    #memberDemo() 
+    memberDemo() 
     
     #addFirstDemo()
     #addFirstLinearDemo()
@@ -1984,7 +1377,7 @@ def main():
     #insertAllNonDecreasingDemo()
     #insertAllNonDecreasingSimpleDemo()
     #iSortDemo()
-    #sSortDemo()
+    sSortDemo()
     #bubbleSortDemo()
 
     #mergeNonDecreasingSimpleDemo()
@@ -1993,51 +1386,15 @@ def main():
     # --- INDEXING OPERATIONS
 
     #lengthDemo()
-    # Demo()
-    # Demo()
-    # Demo()
-    # Demo()
-    # Demo()
-    # Demo()
-
-    # --- LOADERS, UNLOADERS
-
-    #loadWordsSimpleDemo()
-    #loadWordsDemo()
-    #loadWordsReverseSimpleDemo()
-    #loadWordsReverseDemo()
-    #loadWordsNonDecreasingSimpleDemo()
-    #loadWordsNonDecreasingDemo()
-    #loadWordsUniqueIncreasingSimpleDemo()
-    #loadWordsUniqueIncreasingDemo()
-
-    #unloadWordsDemo()
-    #unloadAllWordsDemo()
-    #unloadWordsReverseComponentsDemo()
-    #unloadWordsReverseSimpleDemo()
-    #unloadWordsReverseDemo()
-    #unloadAllWordsReverseDemo()
-
-def multiplication(a,b):
-    c = 0
-    while b != 0:
-        if (b & 1) != 0:
-            c = c + a
-        a = a << 1
-        b = b >> 1
-    return c
-
-def addition(a,b):
-    while a != 0:
-        c = b & a
-        b = b ^ a
-        c = c << 1
-        a = c
-    return b    
-
-##for i in range(5):
-##    for j in range(5):
-##        print(i, j, addition(i,j), multiplication(i,j))
+    #getItemDemo()
+    #setItem0Demo()
+    #setItemDemo()
+    #getSetItemDemo()
+    #memberIndexDemo()
+    #insertAtIndex0Demo()
+    #insertAtIndexDemo()
+    #deleteAtIndexDemo()
+    #deleteGetAtIndexDemo()
 
 #===============================================================================
 
